@@ -16,4 +16,3 @@ A starting point for Meteor apps.
 
 [Read the Documentation](http://themeteorchef.com/base)
 # credit-card-form
-# credit-card-form
