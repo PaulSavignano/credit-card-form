@@ -13,6 +13,18 @@ export class CreditCard extends Component {
       cvc: null,
       token: null,
     }
+    this.setCardType = this.setCardType.bind(this)
+  }
+  setCardType(event) {
+    const type = Payment.fns.cardType(event.target.value)
+    const cards = document.querySelectorAll('[data-brand]')
+    cards.forEach.call(cards, (element) => {
+      if (element.getAttribute('data-brand') === type) {
+        element.classList.add('active')
+      } else {
+        element.classList.remove('active')
+      }
+    })
   }
   renderCardList() {
     return (
@@ -52,6 +64,17 @@ export class CreditCard extends Component {
                 placeholder="MM/YYYY"
                 type="text"
                 className="form-control text-center"
+              />
+            </FormGroup>
+          </Col>
+          <Col xs={ 6 } sm={ 4 } smOffset={ 3 }>
+            <FormGroup>
+              <ControlLabel>CVC</ControlLabel>
+              <input
+                type="text"
+                className="form-control text-center"
+                ref="cvc"
+                placeholder="CVC"
               />
             </FormGroup>
           </Col>
