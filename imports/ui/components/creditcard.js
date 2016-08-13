@@ -60,6 +60,12 @@ export class CreditCard extends Component {
       </form>
     )
   }
+  componentDidMount() {
+    const { number, expiration, cvc } = this.refs
+    Payment.formatCardNumber(number)
+    Payment.formatCardExpiry(expiration)
+    Payment.formatCardCVC(cvc)
+  }
   render() {
     return (
       <div className="CreditCard">
