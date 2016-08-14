@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Payment from 'payment'
 import { Row, Col, FormGroup, ControlLabel, Button, Alert } from 'react-bootstrap'
 import { Bert } from 'meteor/themeteorchef:bert'
+import { getStripeToken } from '../../modules/get-stripe-token.js'
 
 export class CreditCard extends Component {
   constructor(props) {
@@ -35,7 +36,14 @@ export class CreditCard extends Component {
     const exp_month = parseInt(expiration[0], 10)
     const exp_year = parseInt(expiration[1], 10)
     const cvc = refs.cvc.value
-    const card = { number, exp_month, exp_year, cvc }
+    const card = { number, exp_month, exp_year, cvc };
+    getStripeToken(card).then((token) => {
+      card.token = token
+      this.setState(card)
+    }).catch((error) => {
+      console.log(error)
+      Bert.alert(error, 'danger')
+    })
   }
   setCardType(event) {
     const type = Payment.fns.cardType(event.target.value)
@@ -105,6 +113,19 @@ export class CreditCard extends Component {
       </form>
     )
   }
+  renderCard() {
+    const { number, exp_month, exp_year, cvc, token } = this.state
+    return number ? (
+      <Alert bsStyle="info">
+        <h5>{ number }</h5>
+        <p className="exp-cvc">
+          <span>{ exp_month }/{ exp_year }</span>
+          <span>{ cvc }</span>
+        </p>
+        <em>{ token }</em>
+      </Alert>
+    ) : ''
+  }
   componentDidMount() {
     const { number, expiration, cvc } = this.refs
     Payment.formatCardNumber(number)
@@ -116,6 +137,7 @@ export class CreditCard extends Component {
       <div className="CreditCard">
         { this.renderCardList() }
         { this.renderCardForm() }
+        { this.renderCard() }
       </div>
     )
   }
